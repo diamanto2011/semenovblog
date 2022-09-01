@@ -1,0 +1,24 @@
+{% extends "base-sidebars-left-rigth.html" %}
+
+{% block content %}
+
+    <div class="card">
+        <div class="card-body">
+            {{ form_settings.site_name.label }}
+            {{ form_settings.site_name }}
+            {{ form_settings.site_description.label }}
+            {{ form_settings.site_description }}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            {{ form_settings.logo.label }}
+            {{ form_settings.logo }}
+            {{ form_settings.favicon.label }}
+            {{ form_settings.favicon }}
+        </div>
+    </div>
+
+    
+
+{% endblock content %}
