@@ -1,0 +1,9 @@
+{% extends "base-sidebars-left-rigth.html" %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ login_form }}
+        <button type="submit" class="btn btn-primary">Войти</button>    
+    </form>   
+{% endblock content %}
