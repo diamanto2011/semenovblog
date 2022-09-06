@@ -2,23 +2,44 @@
 
 {% block content %}
 
-    <div class="card">
-        <div class="card-body">
-            {{ form_settings.site_name.label }}
-            {{ form_settings.site_name }}
-            {{ form_settings.site_description.label }}
-            {{ form_settings.site_description }}
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            {{ form_settings.logo.label }}
-            {{ form_settings.logo }}
-            {{ form_settings.favicon.label }}
-            {{ form_settings.favicon }}
-        </div>
-    </div>
+    <h1>Настройки</h1>
+    <h2>Основные</h2>
 
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                {{ form_settings.site_name.label }}
+                {{ form_settings.site_name }}
+                {{ form_settings.site_description.label }}
+                {{ form_settings.site_description }}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                {{ form_settings.logo.label }}
+                {{ form_settings.logo }}
+                {{ form_settings.favicon.label }}
+                {{ form_settings.favicon }}
+                
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                {{ form_settings.head.label }}
+                {{ form_settings.head }}
+                {{ form_settings.footer.label }}
+                {{ form_settings.footer }}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                {{ form_settings.is_show_count_of_post_in_rubrics }}
+                {{ form_settings.is_show_count_of_post_in_rubrics.label }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
     
 
 {% endblock content %}

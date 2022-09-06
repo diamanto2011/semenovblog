@@ -2,13 +2,13 @@
 Настройки сайта по умолчанию
 """
 # Основные настройки
-SITE_NAME = {'name': None}
+SITE_NAME = {'site_name': None}
 SITE_DESCRIPTION = {'description': None}
 SHOW_SITE_DESCRIPTION = {'show_site_decription': False}
 LOGO = {'logo': None}
 FAVICON = {'favicon': None}
 TO_HEAD = {'to_head': None}
-TO_FOOTER = {'to_foote': None}
+TO_FOOTER = {'to_footer': None}
 
 # Настройки рубрик
 SHOW_COUNTS_OF_POSTS = False
