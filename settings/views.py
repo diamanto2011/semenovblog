@@ -1,3 +1,4 @@
+from xmlrpc.client import boolean
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views import View
@@ -11,13 +12,13 @@ from django.conf import settings
 from django.core import *
 from django.conf.urls.static import static
 
-# Create your views here.
+
 class SettingsView(View):
     template_name = 'adminpanel/settings/settings.html'
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        form_settings = SettingsForm()
+        form_settings = SettingsForm(self.get_settings_initials())
         context = {
             'form_settings': form_settings,
         }
@@ -108,7 +109,7 @@ class SettingsView(View):
                 }
             )
 
-    def set_bool_data(self, checkbox_data):
+    def set_bool_data(self, checkbox_data) -> bool:
         # Переводим значение, полученное из чекбокса
         # формы в True или False
         if checkbox_data == 'on':
@@ -116,5 +117,41 @@ class SettingsView(View):
         else:
             return False
 
-    def get_initals(self):
-        pass
+    def get_settings_initials(self) -> dict:
+        # Получение начальных значений для формы 
+        # на странице с настройками
+        settings = self.get_settings()
+        initials = {
+            'site_name': self.get_settings_value(settings, 'site_name'),
+            'site_description': self.get_settings_value(settings, 'site_description'),
+            'head': self.get_settings_value(settings, 'head'),
+            'footer': self.get_settings_value(settings, 'footer'),
+        }
+        return initials        
+   
+    def get_settings_dict(self, settings_list: list) -> dict:
+        # Создаем словарь из пар: "настройка-значение" из
+        # таблицы с настройками
+        settings_dict = {}
+        for item in settings_list:
+            settings_dict[item.name] = item.value
+        return settings_dict
+
+    def get_settings(self) -> dict:
+        # Получаем список словарей с настройками и объединяем
+        # их в один общий.
+        text_settings_dict = self.get_settings_dict(SiteTextSettings.objects.all())
+        file_settings_dict = self.get_settings_dict(SiteFileSettings.objects.all())
+        boolean_settings_dict = self.get_settings_dict(SiteBooleanSettings.objects.all())
+        settings = text_settings_dict | file_settings_dict | boolean_settings_dict
+        return settings
+
+    def get_settings_value(self, settings:dict, settings_name:str):    
+        # Проверяет наличие настройки в словаре со списком настроек
+        # Если она есть, то отдает ее значение, если нет,
+        # то возвращает пустую строку.    
+        if settings_name in settings:
+            settings_value = settings[settings_name]
+        else:
+            settings_value = ''
+        return settings_value
