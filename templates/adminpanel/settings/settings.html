@@ -1,6 +1,7 @@
 {% extends "base-sidebars-left-rigth.html" %}
 
 {% block content %}
+    {% load static %}
 
     <h1>Настройки</h1>
     <h2>Основные</h2>
@@ -17,11 +18,13 @@
         </div>
         <div class="card">
             <div class="card-body">
+                <img src="{{ images.logo.url }}" alt="" class="img-fluid">                
                 {{ form_settings.logo.label }}
                 {{ form_settings.logo }}
+                <img src="{{ images.favicon.url }}" alt="" class="img-fluid">   
                 {{ form_settings.favicon.label }}
                 {{ form_settings.favicon }}
-                
+                {{ images.logo }}
             </div>
         </div>
         <div class="card">

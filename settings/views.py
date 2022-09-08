@@ -18,9 +18,11 @@ class SettingsView(View):
 
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        form_settings = SettingsForm(self.get_settings_initials())
+        initials = self.get_settings_initials()
+        form_settings = SettingsForm(initials['initials'])
         context = {
             'form_settings': form_settings,
+            'images': initials['filenames'],
         }
         return render(request, self.template_name, context)
 
@@ -52,7 +54,7 @@ class SettingsView(View):
             self.set_settings(
                 'logo', 
                     {
-                    'filename': request.FILES.get('logo').name,
+                    'filename': request.FILES.get('logo').name.replace(' ', '_'),
                     'file': request.FILES.get('logo'),
                     }, 
                 'file',
@@ -88,7 +90,7 @@ class SettingsView(View):
         if settings_type == 'file':
             filename = Handlers.file_upload( #Загрузка файла, возвращает его имя
                 self,
-                settings.MEDIA_ROOT[0],
+                settings.MEDIA_ROOT,
                 settings_value['filename'],
                 settings_value['file'],
                 unique_name=False, # Если True - имя файла будет уникальным
@@ -109,7 +111,7 @@ class SettingsView(View):
                 }
             )
 
-    def set_bool_data(self, checkbox_data) -> bool:
+    def set_bool_data(self, checkbox_data):
         # Переводим значение, полученное из чекбокса
         # формы в True или False
         if checkbox_data == 'on':
@@ -117,7 +119,7 @@ class SettingsView(View):
         else:
             return False
 
-    def get_settings_initials(self) -> dict:
+    def get_settings_initials(self):
         # Получение начальных значений для формы 
         # на странице с настройками
         settings = self.get_settings()
@@ -126,10 +128,19 @@ class SettingsView(View):
             'site_description': self.get_settings_value(settings, 'site_description'),
             'head': self.get_settings_value(settings, 'head'),
             'footer': self.get_settings_value(settings, 'footer'),
+            'is_show_count_of_post_in_rubrics': self.get_settings_value(settings, 'is_show_count_of_post_in_rubrics'),
         }
-        return initials        
+        filenames = {
+            'logo': self.get_settings_value(settings, 'logo'),
+            'favicon': self.get_settings_value(settings, 'favicon'),
+        }
+        result = {
+            'initials': initials,
+            'filenames': filenames,
+        }
+        return result  
    
-    def get_settings_dict(self, settings_list: list) -> dict:
+    def get_settings_dict(self, settings_list: list):
         # Создаем словарь из пар: "настройка-значение" из
         # таблицы с настройками
         settings_dict = {}
@@ -137,7 +148,7 @@ class SettingsView(View):
             settings_dict[item.name] = item.value
         return settings_dict
 
-    def get_settings(self) -> dict:
+    def get_settings(self):
         # Получаем список словарей с настройками и объединяем
         # их в один общий.
         text_settings_dict = self.get_settings_dict(SiteTextSettings.objects.all())
@@ -155,3 +166,5 @@ class SettingsView(View):
         else:
             settings_value = ''
         return settings_value
+
+
