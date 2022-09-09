@@ -32,5 +32,3 @@ SHOW_AUTHOR_IN_POST = 'login'
 # Безопасность
 TWO_FACTOR_AUTH_ENABLE = False
 
-
-

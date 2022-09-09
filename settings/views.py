@@ -1,4 +1,3 @@
-from xmlrpc.client import boolean
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.views import View
@@ -11,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core import *
 from django.conf.urls.static import static
+from django.contrib import messages
 
 
 class SettingsView(View):
@@ -51,23 +51,29 @@ class SettingsView(View):
             ) 
         # Загружаемые файлы
         if request.FILES.get('logo'):
-            self.set_settings(
-                'logo', 
-                    {
-                    'filename': request.FILES.get('logo').name.replace(' ', '_'),
-                    'file': request.FILES.get('logo'),
-                    }, 
-                'file',
-                )
+            if Validate.file_extention(self, request.FILES.get('logo').name, 'logo') == True:
+                self.set_settings(
+                    'logo', 
+                        {
+                        'filename': request.FILES.get('logo').name,
+                        'file': request.FILES.get('logo'),
+                        }, 
+                    'file',
+                    )
+            else:
+                messages.error(self.request, 'Доступны только файлы png, jpg, jpeg.')
         if request.FILES.get('favicon'):
-            self.set_settings(
-                'favicon', 
-                    {
-                    'filename': request.FILES.get('favicon').name,
-                    'file': request.FILES.get('favicon'),
-                    }, 
-                'file',
-                )
+            if Validate.file_extention(self, request.FILES.get('favicon').name, 'favicon') == True:
+                self.set_settings(
+                    'favicon', 
+                        {
+                        'filename': request.FILES.get('favicon').name,
+                        'file': request.FILES.get('favicon'),
+                        }, 
+                    'file',
+                    )
+            else:
+                messages.error(self.request, 'Доступны только файлы ico')
         # Настройки Boolean      
         self.set_settings(
             'is_show_count_of_post_in_rubrics', 
@@ -91,7 +97,7 @@ class SettingsView(View):
             filename = Handlers.file_upload( #Загрузка файла, возвращает его имя
                 self,
                 settings.MEDIA_ROOT,
-                settings_value['filename'],
+                settings_value['filename'].replace(' ', '_'),
                 settings_value['file'],
                 unique_name=False, # Если True - имя файла будет уникальным
             )

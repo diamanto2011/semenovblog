@@ -3,6 +3,7 @@
 from urllib import request
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
+from .core_config import *
 import random
 
 class CheckUser():
@@ -33,3 +34,19 @@ class Handlers():
         # элемента с уникальным префиксом их цифр
         prefix = str(random.randrange(100000000, 999999999, 1))
         return f'{prefix}-{name}'
+
+
+class Validate():
+    '''
+    Валидаторы
+    '''
+    def file_extention(self, filename, type_of_file):
+        # Проверка расширения загружаемого изображения
+        # для загрузки логотипа. Список доступных
+        # расширений находится в core_config
+        validate_result = False
+        for extention in ALLOWED_FILES_TYPES[type_of_file]:
+            if filename.endswith(extention): validate_result = True
+        return validate_result
+
+

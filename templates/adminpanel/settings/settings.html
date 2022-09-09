@@ -1,11 +1,10 @@
 {% extends "base-sidebars-left-rigth.html" %}
 
 {% block content %}
-    {% load static %}
+    {% load static %}   
 
-    <h1>Настройки</h1>
-    <h2>Основные</h2>
-
+    <h1>Настройки</h1>    
+    <h2>Основные</h2> 
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="card">
